@@ -1,0 +1,76 @@
+version: '3.4'
+services:
+    db:
+        image: mariadb:latest
+        restart: always
+        volumes:
+            - db_data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: ichWill
+            MYSQL_DATABASE: wordpress
+            MYSQL_USER: wp_user
+            MYSQL_PASSWORD: ichHasseKinder
+        # networks:
+            # - bridge
+    wordpress1:
+        depends_on:
+            - db
+        links:
+            - db
+        image: wordpress:latest
+        restart: always
+        volumes:
+            - wp_data1:/var/www/html
+        ports:
+            - "3334:80"
+        environment:
+            WORDPRESS_DB_USER: wp_user
+            WORDPRESS_DB_PASSWORD: ichHasseKinder
+            WORDPRESS_DB_HOST: db:3306
+        networks:
+        #   - bridge
+          - host 
+    wordpress2:
+        depends_on:
+            - db
+        links:
+            - db
+        image: wordpress:latest
+        restart: always
+        volumes:
+            - wp_data2:/var/www/html
+        ports:
+            - "3333:80"
+        environment:
+            WORDPRESS_DB_USER: wp_user
+            WORDPRESS_DB_PASSWORD: ichHasseKinder
+            WORDPRESS_DB_HOST: db:3306
+        networks: 
+        #   - bridge
+          - host   
+    nginx:
+        depends_on:
+            - wordpress1
+            - wordpress2
+        links:
+            - wordpress1
+            - wordpress2
+        image: nginxapp:latest
+        volumes:
+            - nginx:/var/www/html
+        ports:
+            - "5000:80"
+        networks:
+            - host
+volumes:
+
+    db_data:
+    wp_data1:
+    wp_data2:
+    nginx:
+networks:
+    bridge:
+    host:
+    
+    
+        
