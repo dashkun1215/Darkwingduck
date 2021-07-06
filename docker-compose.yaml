@@ -46,7 +46,7 @@ services:
             WORDPRESS_DB_PASSWORD: ichHasseKinder
             WORDPRESS_DB_HOST: db:3306
         networks: 
-        #   - bridge
+          - bridge
           - host   
     nginx:
         depends_on:
